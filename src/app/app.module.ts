@@ -6,7 +6,13 @@ import {
   NgbAlertModule,
   NgbModule,
 } from '@ng-bootstrap/ng-bootstrap';
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+} from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
 
+//component import
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -20,6 +26,10 @@ import { AdminProductsComponent } from './admin/admin-products/admin-products.co
 import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
 import { LoginComponent } from './login/login.component';
 import { OrdersComponent } from './my/orders/orders.component';
+
+//Service Imports
+import { AuthServiceService } from './auth-service.service';
+import { AuthGuardService } from './auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -42,6 +52,8 @@ import { OrdersComponent } from './my/orders/orders.component';
     NgbAlertModule,
     NgbModule,
     AppRoutingModule,
+    //ReactiveFormsModule,
+    SocialLoginModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
       { path: 'products', component: ProductsComponent },
@@ -53,7 +65,25 @@ import { OrdersComponent } from './my/orders/orders.component';
       { path: 'my/orders', component: MyOrdersComponent },
     ]),
   ],
-  providers: [RouterModule],
+  providers: [
+    RouterModule,
+    AuthServiceService,
+    AuthGuardService,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '343699640168-hk0ftqhg0o1mhbn4mr0eeop8l5fqug9d.apps.googleusercontent.com'
+            ),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
